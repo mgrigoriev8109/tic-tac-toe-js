@@ -1,22 +1,16 @@
 const Gameboard = {
-    board: [['X','X','O']['O','O','X']['X','O','X']]
-}
-
-const playTurn = {
-    updateGameboard: function() {
-        // manipulate game logic
-    }
-}
-
-const displayTurn = {
+    board: [['X','X','O']['O','O','X']['X','O','X']],
     updateDisplay: function() {
         // manipulate html display
     }
 }
 
-const playerFactory = (name, marker) => {
+const Player = (name, marker) => {
+    const playTurn = () => {
+        // manipulate game logic
+    }
     return { name, marker }
 }
 
-const playerOne = playerFactory('Mikhail', 'X');
-const playerTwo = playerFactory('Kelly', 'O');
+const playerOne = Player('Mikhail', 'X');
+const playerTwo = Player('Kelly', 'O');
