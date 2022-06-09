@@ -10,9 +10,17 @@ const updateGameboard = (() => {
 const displayGameboard = (() => {
     const boardContainer = document.getElementById('gameboard');
     for ( row = 0 ; row < game.board.length ; row ++) {
-        htmlRow = document.createElement('p');
-        htmlRow.textContent = game.board[row];
-        boardContainer.appendChild(htmlRow);
+        displayRow = document.createElement('div');
+        displayRow.setAttribute('class', 'row');
+
+        for ( cell = 0 ; cell < game.board[row].length ; cell ++ ) {
+            displayCell = document.createElement('div');
+            displayCell.setAttribute('class', 'cell');
+            displayCell.textContent = game.board[row][cell];
+            displayRow.appendChild(displayCell);
+        }
+        
+        boardContainer.appendChild(displayRow);
     }
 })();
 
