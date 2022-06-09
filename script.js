@@ -14,12 +14,9 @@ const displayTurn = {
     }
 }
 
-const playerOne = {
-    name: "Mikhail",
-    marker: "X"
+const playerFactory = (name, marker) => {
+    return { name, marker }
 }
 
-const playerTwo = {
-    name: "Kelly",
-    marker: "O"
-}
+const playerOne = playerFactory('Mikhail', 'X');
+const playerTwo = playerFactory('Kelly', 'O');
