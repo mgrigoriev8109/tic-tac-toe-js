@@ -1,7 +1,7 @@
 const gameboard = (() => {
     board = [['','',''],['','',''],['','','']]
-    winning_combinations = [[1,2,3],[4,5,6],[7,8,9][1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
-    return { board }
+    winningCombinations = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
+    return { board, winningCombinations }
 })();
 
 function displayGameboard() {
@@ -32,12 +32,15 @@ function addEventListeners(marker) {
             let array = this.id.split(" ")
             let row = parseInt(array[0])
             let cell = parseInt(array[1])
+            let results = document.getElementById('results');
             if (gameboard.board[row][cell] !== "") {
                 playTurn(marker)
+                results.textContent = "That marker is already taken"
             }
             else {
                 gameboard.board[row][cell] = marker
                 playTurn(nextPlayer(marker))
+                results.textContent = ""
             }
         })
     }
@@ -58,6 +61,11 @@ function playTurn(marker) {
     clearGameboard()
     displayGameboard()
     addEventListeners(marker)
+    if (winnerPresent(marker) == true) {
+        clearGameboard()
+        displayGameboard()
+        // display the winner name in results div
+    }
 }
 
 function clearGameboard() {
@@ -65,6 +73,18 @@ function clearGameboard() {
     while (boardContainer.firstChild) {
         boardContainer.removeChild(boardContainer.firstChild);
     }
+}
+
+function winnerPresent(marker) {
+        // winnerPresent = false
+        // flatten the gameboard
+        // find the indixes of of the values equalling the marker
+        // assign it to playerSelections array
+    for (combination in gameboard.winningCombinations) {
+        // see if that array of playerSelections matches a combination
+        // if it does set winnerPresent = true
+    }
+        // return winnerPresent
 }
 
 const Player = (name, marker) => {
