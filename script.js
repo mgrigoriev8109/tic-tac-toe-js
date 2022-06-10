@@ -40,7 +40,6 @@ function addEventListeners(marker) {
             else {
                 gameboard.board[row][cell] = marker
                 playTurn(nextPlayer(marker))
-                results.textContent = ""
             }
         })
     }
@@ -58,21 +57,15 @@ function nextPlayer(marker) {
 }
 
 function playTurn(marker) {
-    clearGameboard()
-    displayGameboard()
-    addEventListeners(marker)
-    if (winnerPresent(marker) == true) {
+    let previousPlayer = nextPlayer(marker)
+    if (winnerPresent(previousPlayer)) {
+        endGame(previousPlayer)
+    }
+    else {
         clearGameboard()
         displayGameboard()
-        let results = document.getElementById('results');
-        results.textContent = `The winner is player ${marker}`
-    }
-}
-
-function clearGameboard() {
-    let boardContainer = document.getElementById('gameboard');
-    while (boardContainer.firstChild) {
-        boardContainer.removeChild(boardContainer.firstChild);
+        addEventListeners(marker)
+        results.textContent = ""
     }
 }
 
@@ -84,16 +77,35 @@ function winnerPresent(marker) {
             playerSelections.push(index)
         }
     })
+    return compareSelections(playerSelections, marker)
+}
 
+function compareSelections(playerSelections, marker) {
+    let winnerPresent = false
     for (let i = 0; i < gameboard.winningCombinations.length; i++) {
         combination = gameboard.winningCombinations[i]
-        console.log(gameboard.winningCombinations[i])
+        
         winnerPresent = combination.every(element => {
             return playerSelections.includes(element);
           });
+        if (winnerPresent == true) { 
+            console.log("winner")
+            break; }
     }
+    return winnerPresent
+}
 
-    console.log(winnerPresent)
+function endGame(marker) {
+    clearGameboard()
+    displayGameboard()
+    results.textContent = `The winner is player ${marker}`
+}
+
+function clearGameboard() {
+    let boardContainer = document.getElementById('gameboard');
+    while (boardContainer.firstChild) {
+        boardContainer.removeChild(boardContainer.firstChild);
+    }
 }
 
 const Player = (name, marker) => {
