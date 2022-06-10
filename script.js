@@ -11,37 +11,90 @@ const game = (() => {
                 let row = parseInt(array[0])
                 let cell = parseInt(array[1])
                 let results = document.getElementById('results');
-                if (game.board[row][cell] !== "") {
+                if (board[row][cell] !== "") {
                     assessResults(marker)
                     results.textContent = "That marker is already taken"
                 }
                 else {
-                    game.board[row][cell] = marker
+                    board[row][cell] = marker
                     assessResults(nextPlayer(marker))
                 }
             })
         }
     }
 
+    const nextPlayer = (marker) => {
+        let nextMarker = ""
+        if (marker == "X"){
+            nextMarker = "O"
+        } 
+        else {
+            nextMarker = "X"
+        }
+        return nextMarker
+    }
+
+    const assessResults = (marker) => {
+        let previousPlayer = nextPlayer(marker)
+        if (winnerPresent(previousPlayer)) {
+            display.endGameMessage(previousPlayer)
+        }
+        else if (board.flat().join("").length == 9) {
+            results.textContent = 'This game is a tie!'
+            display.clearGameboard()
+            display.update()
+        }
+        else {
+            display.clearGameboard()
+            display.update()
+            nextTurn(marker)
+            results.textContent = ""
+        }
+    }
+
+    const winnerPresent = (marker) => {
+        let playerSelections = []
+        board.flat().filter((cell, index)  => {
+            if (cell == marker){
+                playerSelections.push(index)
+            }
+        })
+        return compareSelections(playerSelections, marker)
+    }
+    
+    const compareSelections = (playerSelections) => {
+        let winnerPresent = false
+        for (let i = 0; i < winningCombinations.length; i++) {
+            combination = winningCombinations[i]
+            
+            winnerPresent = combination.every(element => {
+                return playerSelections.includes(element);
+              });
+            if (winnerPresent == true) { 
+                console.log("winner")
+                break; }
+        }
+        return winnerPresent
+    }
+    
     return {
-        nextTurn, 
-        board,
-        winningCombinations,
+        nextTurn,
+        board
      }
 })();
 
-const displayGameboard = (() => {
+const display = (() => {
     const update = () => {
         let boardContainer = document.getElementById('gameboard');
 
         for ( row = 0 ; row < game.board.length ; row ++) {
             displayRow = document.createElement('div');
             displayRow.setAttribute('class', 'row');
-            displayCells(row)
+            updateCells(row)
             boardContainer.appendChild(displayRow);
         }
     }
-    const displayCells = () => {
+    const updateCells = () => {
         for ( cell = 0 ; cell < game.board[row].length ; cell ++ ) {
             displayCell = document.createElement('div');
             displayCell.setAttribute('class', 'cell');
@@ -50,86 +103,33 @@ const displayGameboard = (() => {
             displayRow.appendChild(displayCell);
         }
     }
+
+    const endGameMessage = (marker) => {
+        clearGameboard()
+        display.update()
+        results.textContent = `The winner is player ${marker}`
+    }
+    
+    const clearGameboard = () => {
+        let boardContainer = document.getElementById('gameboard');
+        while (boardContainer.firstChild) {
+            boardContainer.removeChild(boardContainer.firstChild);
+        }
+    }
+    
     return {
-        update
+        update,
+        endGameMessage,
+        clearGameboard
     }
 })();
 
-function nextPlayer(marker) {
-    let nextMarker = ""
-    if (marker == "X"){
-        nextMarker = "O"
-    } 
-    else {
-        nextMarker = "X"
-    }
-    return nextMarker
-}
-
-function assessResults(marker) {
-    let previousPlayer = nextPlayer(marker)
-    if (winnerPresent(previousPlayer)) {
-        endGame(previousPlayer)
-    }
-    else if (game.board.flat().join("").length == 9) {
-        results.textContent = 'This game is a tie!'
-        clearGameboard()
-        displayGameboard.update()
-    }
-    else {
-        clearGameboard()
-        displayGameboard.update()
-        game.nextTurn(marker)
-        results.textContent = ""
-    }
-}
-
-function winnerPresent(marker) {
-    let winnerPresent = false
-    let playerSelections = []
-    game.board.flat().filter((cell, index)  => {
-        if (cell == marker){
-            playerSelections.push(index)
-        }
-    })
-    return compareSelections(playerSelections, marker)
-}
-
-function compareSelections(playerSelections, marker) {
-    let winnerPresent = false
-    for (let i = 0; i < game.winningCombinations.length; i++) {
-        combination = game.winningCombinations[i]
-        
-        winnerPresent = combination.every(element => {
-            return playerSelections.includes(element);
-          });
-        if (winnerPresent == true) { 
-            console.log("winner")
-            break; }
-    }
-    return winnerPresent
-}
-
-function endGame(marker) {
-    clearGameboard()
-    displayGameboard.update()
-    results.textContent = `The winner is player ${marker}`
-}
-
-function clearGameboard() {
-    let boardContainer = document.getElementById('gameboard');
-    while (boardContainer.firstChild) {
-        boardContainer.removeChild(boardContainer.firstChild);
-    }
-}
-
-const Player = (name, marker) => {
-    return { name, marker }
+const Player = (marker) => {
+    return { marker }
 };
 
 const playGame = (() => {
-    let playerOne = Player('Mikhail', 'X');
-    let playerTwo = Player('Kelly', 'O');
-    displayGameboard.update()
+    let playerOne = Player('X');
+    display.update()
     game.nextTurn(playerOne.marker)
 })();
