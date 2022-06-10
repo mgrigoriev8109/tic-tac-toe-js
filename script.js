@@ -1,5 +1,5 @@
 const gameboard = (() => {
-    board = [['O','O','O'],['O','O','O'],['O','O','O']]
+    board = [['','',''],['','',''],['','','']]
     winning_combinations = [[1,2,3],[4,5,6],[7,8,9][1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
     return { board }
 })();
@@ -15,16 +15,22 @@ function clearGameboard() {
     }
 }
 
-function addEventListeners() {
+function playTurn(marker) {
     let allCells = document.getElementsByClassName('cell');
     for (var i = 0 ; i < allCells.length; i++) {
         allCells[i].addEventListener("click", function (e) {
             let array = this.id.split(" ")
             let row = parseInt(array[0])
             let cell = parseInt(array[1])
-            gameboard.board[row][cell] = "X"
+            gameboard.board[row][cell] = marker
             clearGameboard()
             displayGameboard()
+            if (marker == "X"){
+                playTurn("O")
+            } 
+            else {
+                playTurn("X")
+            }
         })
     }
 }
@@ -48,15 +54,11 @@ function displayGameboard() {
         
         boardContainer.appendChild(displayRow);
     }
-    addEventListeners()
 };
 
 const playGame = (() => {
-    let winner = ""
     let playerOne = Player('Mikhail', 'X');
     let playerTwo = Player('Kelly', 'O');
-
     displayGameboard()
-    // every turn check if player's selections include any of those combinations
-    return { winner }
+    playTurn(playerOne.marker)
 })();
