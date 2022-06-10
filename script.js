@@ -32,21 +32,32 @@ function addEventListeners(marker) {
             let array = this.id.split(" ")
             let row = parseInt(array[0])
             let cell = parseInt(array[1])
-            gameboard.board[row][cell] = marker
-            nextPlayerTurn(marker)
+            if (gameboard.board[row][cell] !== "") {
+                playTurn(marker)
+            }
+            else {
+                gameboard.board[row][cell] = marker
+                playTurn(nextPlayer(marker))
+            }
         })
     }
 }
 
-function nextPlayerTurn(marker) {
-    clearGameboard()
-    displayGameboard()
+function nextPlayer(marker) {
+    let nextMarker = ""
     if (marker == "X"){
-        addEventListeners("O")
+        nextMarker = "O"
     } 
     else {
-        addEventListeners("X")
+        nextMarker = "X"
     }
+    return nextMarker
+}
+
+function playTurn(marker) {
+    clearGameboard()
+    displayGameboard()
+    addEventListeners(marker)
 }
 
 function clearGameboard() {
