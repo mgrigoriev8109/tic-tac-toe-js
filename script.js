@@ -61,6 +61,11 @@ function playTurn(marker) {
     if (winnerPresent(previousPlayer)) {
         endGame(previousPlayer)
     }
+    else if (gameboard.board.flat().join("").length == 9) {
+        results.textContent = 'This game is a tie!'
+        clearGameboard()
+        displayGameboard()
+    }
     else {
         clearGameboard()
         displayGameboard()
