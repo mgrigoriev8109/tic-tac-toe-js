@@ -1,6 +1,6 @@
 const gameboard = (() => {
     board = [['','',''],['','',''],['','','']]
-    winningCombinations = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
+    winningCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
     return { board, winningCombinations }
 })();
 
@@ -64,7 +64,8 @@ function playTurn(marker) {
     if (winnerPresent(marker) == true) {
         clearGameboard()
         displayGameboard()
-        // display the winner name in results div
+        let results = document.getElementById('results');
+        results.textContent = `The winner is player ${marker}`
     }
 }
 
@@ -76,15 +77,23 @@ function clearGameboard() {
 }
 
 function winnerPresent(marker) {
-        // winnerPresent = false
-        // flatten the gameboard
-        // find the indixes of of the values equalling the marker
-        // assign it to playerSelections array
-    for (combination in gameboard.winningCombinations) {
-        // see if that array of playerSelections matches a combination
-        // if it does set winnerPresent = true
+    let winnerPresent = false
+    let playerSelections = []
+    gameboard.board.flat().filter((cell, index)  => {
+        if (cell == marker){
+            playerSelections.push(index)
+        }
+    })
+
+    for (let i = 0; i < gameboard.winningCombinations.length; i++) {
+        combination = gameboard.winningCombinations[i]
+        console.log(gameboard.winningCombinations[i])
+        winnerPresent = combination.every(element => {
+            return playerSelections.includes(element);
+          });
     }
-        // return winnerPresent
+
+    console.log(winnerPresent)
 }
 
 const Player = (name, marker) => {
